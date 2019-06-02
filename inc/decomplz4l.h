@@ -18,6 +18,10 @@ typedef struct decomplz4l_map_struct_t{
 #define DECOMPLZ4L_COMP_BASE 0
 #endif
 
+#ifndef DECOMPLZ4L_GROW_UP
+#define DECOMPLZ4L_GROW_UP 1
+#endif
+
 #ifndef DECOMPLZ4L_COMP_SIZE
 #if 0==DECOMPLZ4L_GROW_UP
     #error "DECOMPLZ4L_GROW_UP=0, DECOMPLZ4L_COMP_SIZE must be defined"
