@@ -1,0 +1,4 @@
+#!/bin/sh
+
+sudo -H pip3 install intelhex
+sudo apt-get install liblz4-tool

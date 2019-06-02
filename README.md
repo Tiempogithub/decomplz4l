@@ -39,6 +39,7 @@ An intel-hex file with the compressed storage area and without the selected sect
 
 
     decomplz4l_prep/__init__.py <ihex file> <python file>
+    
 
 - Optionally you can use the script phyihex.py to create a clean output file which
 fully defines the target physical memories.
