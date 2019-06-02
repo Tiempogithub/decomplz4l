@@ -1,3 +1,4 @@
+
 # decomplz4l
 Generic framework for compressed firmware on embedded devices
 
@@ -32,15 +33,10 @@ An intel-hex file with the compressed storage area and without the selected sect
 ### Usage
 - Compile the entire firmware without memory size constraints
 - Identify the code sections which need to be compressed to fit in the memory
-- Place the code to compress in dedicated sections using \__attribute__ and/or linker script magic. Store those sections in an address range which does not exist on the target device
+- Place the code to compress in dedicated sections using \_\_attribute\_\_ and/or linker script magic. Store those sections in an address range which does not exist on the target device
 - Compile again: you get the "input hex-file"
 - Define the desired output image in a Python3 script following the template in tests/demo/minfo.py. This file extract various information from the elf file, this is not mandatory, the only thing which matters is the content of the global variables at the end of the script.   
-- Run:
-
-
-    decomplz4l_prep/__init__.py <ihex file> <python file>
-    
-
+- Run: `decomplz4l_prep/__init__.py <ihex file> <python file>`  
 - Optionally you can use the script phyihex.py to create a clean output file which
 fully defines the target physical memories.
 
@@ -65,3 +61,4 @@ lz4 tool. (Currently lz4 python3 bindings do not support the "legacy" format).
 On ubuntu:
 
     sudo apt-get install liblz4-tool
+
