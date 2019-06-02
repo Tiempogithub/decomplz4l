@@ -1,0 +1,5 @@
+#!/bin/sh
+
+rm -f smallz4cat *.bin
+rm demo/demo.ihex.*
+rm -rf ../decomplz4l_prep/__pycache__
