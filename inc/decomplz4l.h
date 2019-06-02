@@ -1,8 +1,31 @@
 #ifndef __DECOMPLZ4L_H__
 #include <stdint.h>
 
+//Option configuration items
+
 #ifndef DECOMPLZ4L_CUSTOM_SIZE_T
 typedef unsigned int decomplz4l_size_t;
+#endif
+
+#ifndef DECOMPLZ4L_CUSTOME_MAP_T
+typedef struct decomplz4l_map_struct_t{
+    unsigned int load_offset;
+    unsigned int run_offset;
+} decomplz4l_map_t;
+#endif
+
+#ifndef DECOMPLZ4L_COMP_BASE
+#define DECOMPLZ4L_COMP_BASE 0
+#endif
+
+#ifndef DECOMPLZ4L_COMP_SIZE
+#if 0==DECOMPLZ4L_GROW_UP
+    #error "DECOMPLZ4L_GROW_UP=0, DECOMPLZ4L_COMP_SIZE must be defined"
+#endif
+#endif
+
+#ifndef DECOMPLZ4L_RUN_BASE
+#define DECOMPLZ4L_RUN_BASE 0
 #endif
 
 #ifndef DECOMPLZ4L_CUSTOM_ERROR_HANDLER
@@ -10,6 +33,9 @@ static void decomplz4l_error_handler(void){
     while(1);
 }
 #endif
+
+//functions
+
 //decompress lz4 "legacy" format .i.e. without any optional part
 //src shall not include the magic bytes
 static decomplz4l_size_t decomplz4l(void*dst,const void*const src){
@@ -82,5 +108,19 @@ static decomplz4l_size_t decomplz4l(void*dst,const void*const src){
     }
     return pos;
     //return out-(uint8_t*)dst;
+}
+
+//load a compressed section at the correct run address
+static void decomplz4l_load_section(unsigned int index){
+    uint8_t*load_address = DECOMPLZ4L_COMP_BASE;
+    uint8_t*run_address = DECOMPLZ4L_RUN_BASE;
+    #if DECOMPLZ4L_GROW_UP
+    const decomplz4l_map_t*const map = (const decomplz4l_map_t*const)(DECOMPLZ4L_COMP_BASE+index*sizeof(decomplz4l_map_t));
+    #else
+    const decomplz4l_map_t*const map = (const decomplz4l_map_t*const)(DECOMPLZ4L_COMP_BASE+DECOMPLZ4L_COMP_SIZE-index*sizeof(decomplz4l_map_t));
+    #endif
+    load_address+=map->load_offset;
+    run_address+=map->run_offset;
+    decomplz4l(run_address,load_address);
 }
 #endif
