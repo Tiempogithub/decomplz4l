@@ -44,11 +44,9 @@ static void decomplz4l_error_handler(void){
 //src shall not include the magic bytes
 static decomplz4l_size_t decomplz4l(void*dst,const void*const src){
     const uint8_t* in=(const uint8_t*)src;
-    //uint8_t* out=(uint8_t*)dst;
+    uint8_t*out=(uint8_t*)dst;
     // contains the latest decoded data
-    uint8_t* history=(uint8_t*)dst;//TODO: replace history[pos++] with (*out++)
-    // next free position in history[]
-    decomplz4l_size_t  pos = 0;
+    uint8_t*const history=(uint8_t*)dst;
     // parse all blocks until blockSize == 0
     while (1){
         // block size
@@ -78,7 +76,7 @@ static decomplz4l_size_t decomplz4l(void*dst,const void*const src){
             }
             blockOffset += numLiterals;
             // fast loop
-            while (numLiterals-- > 0) history[pos++] = (*in++);
+            while (numLiterals-- > 0) (*out++) = (*in++);
             // last token has only literals
             if (blockOffset == blockSize) break;
             // match distance is encoded in two bytes (little endian)
@@ -101,17 +99,14 @@ static decomplz4l_size_t decomplz4l(void*dst,const void*const src){
                 } while (current == 255);
             }
             // copy match
-            decomplz4l_size_t referencePos = pos - delta;
+            decomplz4l_size_t referencePos = (out-history) - delta;
             // read/write continuous block (no wrap-around at the end of history[])
-            while (matchLength-- > 0)
-            history[pos++] = history[referencePos++];
+            while (matchLength-- > 0){
+                (*out++) = history[referencePos++];
+            }
         }
-        // all legacy blocks must be completely filled - except for the last one
-        if (numWritten + pos < 8*1024*1024)
-        break;
     }
-    return pos;
-    //return out-(uint8_t*)dst;
+    return out-(uint8_t*)dst;
 }
 
 //load a compressed section at the correct run address
