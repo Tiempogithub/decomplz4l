@@ -48,7 +48,7 @@ static decomplz4l_size_t decomplz4l(void*dst,const void*const src){
     // contains the latest decoded data
     uint8_t*const history=(uint8_t*)dst;
     // parse all blocks until blockSize == 0
-    while (1){
+    do{
         // block size
         decomplz4l_size_t blockSize = (*in++);
         blockSize |= ((decomplz4l_size_t)(*in++)) <<  8;
@@ -105,21 +105,27 @@ static decomplz4l_size_t decomplz4l(void*dst,const void*const src){
                 (*out++) = history[referencePos++];
             }
         }
-    }
+    }while(0);
     return out-(uint8_t*)dst;
+}
+
+static void decomplz4l_get_section(unsigned int index,uint8_t**run_address,uint8_t**load_address){
+	*run_address = DECOMPLZ4L_RUN_BASE;
+	*load_address = DECOMPLZ4L_COMP_BASE;
+    #if DECOMPLZ4L_GROW_UP
+    const decomplz4l_map_t*const map = (const decomplz4l_map_t*const)(DECOMPLZ4L_COMP_BASE+index*sizeof(decomplz4l_map_t));
+    #else
+    const decomplz4l_map_t*const map = (const decomplz4l_map_t*const)(DECOMPLZ4L_COMP_BASE+DECOMPLZ4L_COMP_SIZE-(index+1)*sizeof(decomplz4l_map_t));
+    #endif
+    *run_address+=map->run_offset;
+    *load_address+=map->load_offset;
 }
 
 //load a compressed section at the correct run address
 static void decomplz4l_load_section(unsigned int index){
-    uint8_t*load_address = DECOMPLZ4L_COMP_BASE;
-    uint8_t*run_address = DECOMPLZ4L_RUN_BASE;
-    #if DECOMPLZ4L_GROW_UP
-    const decomplz4l_map_t*const map = (const decomplz4l_map_t*const)(DECOMPLZ4L_COMP_BASE+index*sizeof(decomplz4l_map_t));
-    #else
-    const decomplz4l_map_t*const map = (const decomplz4l_map_t*const)(DECOMPLZ4L_COMP_BASE+DECOMPLZ4L_COMP_SIZE-index*sizeof(decomplz4l_map_t));
-    #endif
-    load_address+=map->load_offset;
-    run_address+=map->run_offset;
+	uint8_t*run_address;
+	uint8_t*load_address;
+    decomplz4l_get_section(index,&run_address,&load_address);
     decomplz4l(run_address,load_address);
 }
 #endif

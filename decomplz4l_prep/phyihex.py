@@ -33,6 +33,10 @@ for sec in sections:
     for i in range(sec[0],sec[1]):
         iho[i]=ih[i]
 
+#copy start address
+#print("start address: ",ih.start_addr)
+iho.start_addr = ih.start_addr
+            
 iho.write_hex_file(ihexf+".phy.ihex")
 
 all_sections = iho.segments()
