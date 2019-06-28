@@ -110,12 +110,13 @@ static decomplz4l_size_t decomplz4l(void*dst,const void*const src){
 }
 
 static void decomplz4l_get_section(unsigned int index,uint8_t**run_address,uint8_t**load_address){
-	*run_address = DECOMPLZ4L_RUN_BASE;
-	*load_address = DECOMPLZ4L_COMP_BASE;
-    #if DECOMPLZ4L_GROW_UP
-    const decomplz4l_map_t*const map = (const decomplz4l_map_t*const)(DECOMPLZ4L_COMP_BASE+index*sizeof(decomplz4l_map_t));
+    uint8_t *comp_base = (uint8_t*)DECOMPLZ4L_COMP_BASE;
+    *run_address = (uint8_t*)DECOMPLZ4L_RUN_BASE;
+    *load_address = comp_base;
+        #if DECOMPLZ4L_GROW_UP
+    const decomplz4l_map_t*const map = (const decomplz4l_map_t*const)(comp_base+index*sizeof(decomplz4l_map_t));
     #else
-    const decomplz4l_map_t*const map = (const decomplz4l_map_t*const)(DECOMPLZ4L_COMP_BASE+DECOMPLZ4L_COMP_SIZE-(index+1)*sizeof(decomplz4l_map_t));
+    const decomplz4l_map_t*const map = (const decomplz4l_map_t*const)(comp_base+DECOMPLZ4L_COMP_SIZE-(index+1)*sizeof(decomplz4l_map_t));
     #endif
     *run_address+=map->run_offset;
     *load_address+=map->load_offset;

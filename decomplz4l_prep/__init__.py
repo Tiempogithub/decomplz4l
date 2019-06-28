@@ -166,8 +166,9 @@ if __name__ == "__main__":
 
     #copy all regular sections
     for sec in all_sections:
-        if (sec[1]<comp_storage_start) or (sec[0]>comp_storage_end):
-            for i in range(sec[0],sec[1]):
+        print("copy section from %x to %x"%(sec[0],sec[1]))
+        for i in range(sec[0],sec[1]):
+            if (i<comp_storage_start) or (i>=comp_storage_end):
                 iho[i]=ih[i]
 
     #copy start address

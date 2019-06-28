@@ -2,11 +2,13 @@
 
 set -e
 
+python3="python"
+
 rm -f smallz4cat
 gcc -std=c99 -I ../inc smallz4cat.c -o smallz4cat
 
-../decomplz4l_prep/__init__.py ./demo/demo.ihex ./demo/minfo.py
-../decomplz4l_prep/phyihex.py ./demo/demo.ihex.lz4l.ihex 0x80000000 0x8000FFFF 0x02000000 0x02000FFF
+$python3 ../decomplz4l_prep/__init__.py ./demo/demo.ihex ./demo/minfo.py
+$python3 ../decomplz4l_prep/phyihex.py ./demo/demo.ihex.lz4l.ihex 0x80000000 0x8000FFFF 0x02000000 0x02000FFF
 
 #sanity check
 ./smallz4cat lz4_output.bin > decompressed.bin
